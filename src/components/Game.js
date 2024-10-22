@@ -416,7 +416,7 @@ const Game = () => {
                     <div className="aircraft" style={{
                         left: aircraftPosition.x + 'px',
                         top: aircraftPosition.y + 'px',
-                        animation: 'fly 1.5s ease-in-out infinite' // Add animation to simulate flying
+                        animation: 'fly 1.5s ease-in-out infinite' //  animation to simulate flying
                     }}>✈️</div>
 
                     {/* Render Clouds */}
