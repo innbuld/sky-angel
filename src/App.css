@@ -15,8 +15,9 @@ body {
   background-color: #fff;
   border: 2px solid #000;
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Ensure that nothing is clipped */
 }
+
 
 .start-button {
   position: absolute;
@@ -30,8 +31,9 @@ body {
 
 .game-area {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 1024px; /* Exact width of the game */
+  height: 768px; /* Exact height of the game */
+  overflow: visible; /* Ensure no overflow clipping */
   background-color: #87CEEB;
 }
 
@@ -59,23 +61,23 @@ body {
 .cloud, .bird, .parachute, .star, .explosion {
   position: absolute;
   width: 50px;
-  height: auto;
+  height: 50px;
 }
 
 .cloud {
-  font-size: 30px; /* You can adjust the size of the cloud emoji */
+  font-size: 40px;
 }
 
 .bird {
-  font-size: 30px; /* Original size */
+  font-size: 40px;
 }
 
 .parachute {
-  font-size: 30px; /* Original size */
+  font-size: 40px;
 }
 
 .star {
-  font-size: 30px; /* Original size */
+  font-size: 40px;
 }
 
 .explosion {

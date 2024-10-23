@@ -23,6 +23,10 @@ const MAX_ENTITIES = {
   cloud: 15
 };
 
+// Entity dimensions
+const ENTITY_WIDTH = 50;
+const ENTITY_HEIGHT = 50;
+
 const Game = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -186,35 +190,35 @@ const Game = () => {
   useEffect(() => {
     const movementInterval = setInterval(() => {
       if (paused || !gameStarted || gameOver) return;
-
-      // Move Clouds and remove if out of bounds
-      setClouds(prevClouds => prevClouds
-        .map(cloud => ({ ...cloud, x: cloud.x - 2 })) // Move clouds left
-        .filter(cloud => cloud.x + cloud.width > 0) // Adjusted condition
-      );
-
-      // Move Birds and remove if out of bounds
-      setBirds(prevBirds => prevBirds
-        .map(bird => ({ ...bird, x: bird.x - 4 })) // Move birds left
-        .filter(bird => bird.x + bird.width > 0) // Adjusted condition
-      );
-
-      // Move Parachutes and remove if out of bounds
-      setParachutes(prevParachutes => prevParachutes
-        .map(p => ({ ...p, y: p.y + 2 })) // Move parachutes down
-        .filter(p => p.y < 768) // Remove parachutes that have left the screen
-      );
-
-      // Move Stars and remove if out of bounds
-      setStars(prevStars => prevStars
-        .map(star => ({ ...star, y: star.y + 2 })) // Move stars down
-        .filter(star => star.y < 768) // Remove stars that have left the screen
-      );
+  
+      // Move Clouds fully across the screen
+      setClouds(prevClouds => prevClouds.map(cloud => ({
+        ...cloud,
+        x: cloud.x - 2 // Move clouds left by 2px per frame
+      })));
+  
+      // Move Birds fully across the screen
+      setBirds(prevBirds => prevBirds.map(bird => ({
+        ...bird,
+        x: bird.x - 4 // Move birds left by 4px per frame
+      })));
+  
+      // Move Parachutes down the screen
+      setParachutes(prevParachutes => prevParachutes.map(p => ({
+        ...p,
+        y: p.y + 2 // Move parachutes down by 2px per frame
+      })));
+  
+      // Move Stars down the screen
+      setStars(prevStars => prevStars.map(star => ({
+        ...star,
+        y: star.y + 2 // Move stars down by 2px per frame
+      })));
     }, 100);
-
+  
     return () => clearInterval(movementInterval);
   }, [paused, gameStarted, gameOver]);
-
+  
   // Collision Detection
   useEffect(() => {
     // Check collision with Birds
@@ -245,10 +249,10 @@ const Game = () => {
 
   // Collision Detection Helper Function
   const checkCollision = (aircraft, entity) => {
-    const aircraftRect = { x: aircraft.x, y: aircraft.y, width: 50, height: 50 };
+    const aircraftRect = { x: aircraft.x, y: aircraft.y, width: ENTITY_WIDTH, height: ENTITY_HEIGHT };
 
-    const entityWidth = entity.width || 50; // Default width
-    const entityHeight = entity.height || 50; // Default height
+    const entityWidth = entity.width || ENTITY_WIDTH; // Default width
+    const entityHeight = entity.height || ENTITY_HEIGHT; // Default height
 
     const entityRect = { x: entity.x, y: entity.y, width: entityWidth, height: entityHeight };
 
@@ -285,10 +289,10 @@ const Game = () => {
   const spawnBird = () => {
     if (!paused && gameStarted && !gameOver) {
       const newBirds = Array.from({ length: SPAWN_COUNTS.bird }, () => ({
-        x: 1024, // Starting at the right edge
-        y: Math.random() * (768 - 30), // Adjusted to prevent spawning outside game area
-        width: 50, // Entity width
-        height: 30, // Approximate height based on icon size
+        x: 1024 - ENTITY_WIDTH, // Start within the right edge
+        y: Math.random() * (768 - ENTITY_HEIGHT),
+        width: ENTITY_WIDTH,
+        height: ENTITY_HEIGHT,
         id: Date.now() + Math.random()
       }));
       setBirds(prevBirds => {
@@ -303,10 +307,10 @@ const Game = () => {
   const spawnParachute = () => {
     if (!paused && gameStarted && !gameOver) {
       const newParachutes = Array.from({ length: SPAWN_COUNTS.parachute }, () => ({
-        x: Math.random() * (1024 - 30), // Adjusted to prevent spawning outside game area
+        x: Math.random() * (1024 - ENTITY_WIDTH),
         y: 0,
-        width: 30,
-        height: 30,
+        width: ENTITY_WIDTH,
+        height: ENTITY_HEIGHT,
         id: Date.now() + Math.random()
       }));
       setParachutes(prevParachutes => {
@@ -321,10 +325,10 @@ const Game = () => {
   const spawnStar = () => {
     if (!paused && gameStarted && !gameOver) {
       const newStars = Array.from({ length: SPAWN_COUNTS.star }, () => ({
-        x: Math.random() * (1024 - 30), // Adjusted to prevent spawning outside game area
+        x: Math.random() * (1024 - ENTITY_WIDTH),
         y: 0,
-        width: 30,
-        height: 30,
+        width: ENTITY_WIDTH,
+        height: ENTITY_HEIGHT,
         id: Date.now() + Math.random()
       }));
       setStars(prevStars => {
@@ -339,10 +343,10 @@ const Game = () => {
   const spawnCloud = () => {
     if (!paused && gameStarted && !gameOver) {
       const newClouds = Array.from({ length: SPAWN_COUNTS.cloud }, () => ({
-        x: 1024, // Starting at the right edge
-        y: Math.random() * (500 - 30), // Adjusted to prevent spawning outside game area
-        width: 50,
-        height: 30,
+        x: 1024 - ENTITY_WIDTH, // Start within the right edge
+        y: Math.random() * (500 - ENTITY_HEIGHT),
+        width: ENTITY_WIDTH,
+        height: ENTITY_HEIGHT,
         id: Date.now() + Math.random()
       }));
       setClouds(prevClouds => {
@@ -408,8 +412,8 @@ const Game = () => {
 
     const formData = new URLSearchParams();
     formData.append('name', playerName);
-    formData.append('time', time);
-    formData.append('stars', starsCollected);
+    formData.append('time', time.toString()); // Ensure it's a string
+    formData.append('stars', starsCollected.toString()); // Ensure it's a string
 
     fetch('http://xxxxxxxxx/register.php', {
       method: 'POST',
